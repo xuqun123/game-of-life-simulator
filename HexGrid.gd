@@ -32,9 +32,10 @@ func generate_grid():
 			tile.translate(Vector3(tile_coordinates.x, 0, tile_coordinates.y))
 			tile_coordinates.y += TILE_SIZE
 			
-			var node = tile.get_node("unit_tile/tmpParent/tile")
+#			var node = tile.get_node("unit_tile/tmpParent/tile")
+			#			node.material_override = get_tile_material(tile_index)
+			
 #			var node = tile.get_node("blockSnowRoundedLow/tmpParent/blockSnowRoundedLow")
-			node.material_override = get_tile_material(tile_index)
 #			node.material_override = DEFAULT_TILE_MATERIAL
 #			tile.get_node("unit_hex/mergedBlocks(Clone)").material_override = get_tile_material(tile_index)
 			
