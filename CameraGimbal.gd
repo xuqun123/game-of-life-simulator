@@ -10,6 +10,9 @@ export (float, 0.001, 0.1) var mouse_sensitivity = 0.005
 export (bool) var invert_y = false
 export (bool) var invert_x = false
 
+# movement settings
+export (float) var move_rate = 0.2
+
 # zoom settings
 export (float) var max_zoom = 2.5
 export (float) var min_zoom = 0.1
@@ -18,8 +21,15 @@ export (float, 0.05, 1.0) var zoom_speed = 0.09
 var zoom = 1.5
 
 func _unhandled_input(event):
-	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+	if !event is InputEventMouseButton || event.button_index != BUTTON_RIGHT:
 		return
+	print("Mouse right click event", event.as_text())
+	
+	var x_rotation = 0
+	if event.is_action_pressed("cam_up"):
+		x_rotation += 1
+		x_rotation = -x_rotation if invert_y else x_rotation
+		$InnerGimbal.rotate_object_local(Vector3.RIGHT, x_rotation * rotation_speed)
 	if event.is_action_pressed("cam_zoom_in"):
 		zoom += zoom_speed
 	if event.is_action_pressed("cam_zoom_out"):
@@ -41,25 +51,33 @@ func get_input_keyboard(delta):
 		y_rotation += -1
 	if Input.is_action_pressed("cam_left"):
 		y_rotation += +1
-	rotate_object_local(Vector3.UP, y_rotation * rotation_speed * delta)
+	rotate(Vector3.RIGHT, y_rotation * rotation_speed * delta)
+	
+	if Input.is_action_pressed("move_right"):
+		global_translate(Vector3(move_rate, 0, 0))
+	if Input.is_action_pressed("move_left"):
+		global_translate(Vector3(-move_rate, 0, 0))
+	
 	# Rotate inner gimbal around local x axis
 	var x_rotation = 0
-	if Input.is_action_pressed("cam_up"):
-		x_rotation += 1
-	if Input.is_action_pressed("cam_down"):
-		x_rotation += -1
-	x_rotation = -x_rotation if invert_y else x_rotation
-	$InnerGimbal.rotate_object_local(Vector3.RIGHT, x_rotation * rotation_speed * delta)
+	if Input.is_action_pressed("move_forward"):
+#		x_rotation += 1
+		global_translate(Vector3(0, 0, -move_rate))
+	if Input.is_action_pressed("move_backward"):
+#		x_rotation += -1
+		global_translate(Vector3(0, 0, move_rate))
+#	x_rotation = -x_rotation if invert_y else x_rotation
+#	$InnerGimbal.rotate_object_local(Vector3.RIGHT, x_rotation * rotation_speed * delta)
 	
 	if Input.is_action_pressed("cam_zoom_in"):
-		zoom += zoom_speed
-	if Input.is_action_pressed("cam_zoom_out"):
 		zoom -= zoom_speed
+	if Input.is_action_pressed("cam_zoom_out"):
+		zoom += zoom_speed
 	zoom = clamp(zoom, min_zoom, max_zoom)
 
 func _process(delta):
-	if !mouse_control:
-		get_input_keyboard(delta)
+#	if !mouse_control:
+	get_input_keyboard(delta)
 	$InnerGimbal.rotation.x = clamp($InnerGimbal.rotation.x, -0.7, 0.6)
 	scale = lerp(scale, Vector3.ONE * zoom, zoom_speed)
 	if target:
