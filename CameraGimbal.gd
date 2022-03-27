@@ -14,7 +14,7 @@ export (bool) var invert_x = false
 export (float) var move_rate = 0.2
 
 # zoom settings
-export (float) var max_zoom = 2.5
+export (float) var max_zoom = 4
 export (float) var min_zoom = 0.1
 export (float, 0.05, 1.0) var zoom_speed = 0.09
 

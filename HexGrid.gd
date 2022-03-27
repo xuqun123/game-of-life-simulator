@@ -10,17 +10,41 @@ const TILE_MATERIALS = [
 ]
 
 const TILE_SIZE := 1.0
+const NORMAL_SPEED := 50
 const EMPTY_TILE = preload("res://EmptyTile.tscn")
 const CELL_TILE = preload("res://CellTile.tscn")
-const game_utils = preload("res://Utils.gd")
+
+const GAME_UTILS = preload("res://Utils.gd")
+var audio_player
+
+var godzila
+var kiwi
+var fox
+var godzilla_origin_pos
+var fox_origin_pos
+var kiwi_origin_pos
 
 export (int, 2, 20) var grid_size := 30
+export (float) var run_speed = 50.0
 
 var started = false
-
+var start_frame = 0
 
 func _ready() -> void:
 	generate_grid()
+		
+	audio_player = get_parent_spatial().get_node("AudioStreamPlayer")
+	
+	godzila = get_parent_spatial().get_node("Godzilla")
+	kiwi = get_parent_spatial().get_node("Kiwi")
+	fox = get_parent_spatial().get_node("Fox")
+	
+	godzilla_origin_pos = godzila.transform.origin
+	kiwi_origin_pos = kiwi.transform.origin
+	fox_origin_pos = fox.transform.origin
+	
+	if not audio_player.playing:
+		audio_player.play()
 
 func generate_grid():
 	var tile_index := 0
@@ -84,10 +108,10 @@ func run_game():
 			live_cells.append(disabled_cells[i])			
 		
 	for i in range(len(dead_cells)):
-		game_utils.on_off(dead_cells[i])
+		GAME_UTILS.on_off(dead_cells[i])
 		
 	for i in range(len(live_cells)):
-		game_utils.on_off(live_cells[i])
+		GAME_UTILS.on_off(live_cells[i])
 		
 func reset_game():
 	var cells = get_children()
@@ -127,23 +151,57 @@ func neighbor_cells_count(cell):
 	
 func _on_StartButton_pressed():
 	print("The start button is pressed.")
+
 	print(enabled_disabled_cells())
 	started = true
 	
-	while started:
-		run_game()
-		print("start")
-		yield(get_tree().create_timer(1.0), "timeout")
-		print("end")
-		
+	godzila.stopped = false
+	kiwi.stopped = false
+	fox.stopped = false
+	fox.get_node("AnimationPlayer").stop()
 
 func _on_ResetButton_pressed():
 	print("The reset button is pressed.")
 	started = false
 	reset_game()
-
-
+	
+	var robot = get_parent_spatial().get_node("Robot")
+	robot.dead = false
+	robot.show()
+	
+	godzila.transform.origin = godzilla_origin_pos
+	kiwi.transform.origin = kiwi_origin_pos
+	fox.transform.origin = fox_origin_pos
+	
+	godzila.stopped = true
+	kiwi.stopped = true
+	fox.stopped = true
+	fox.get_node("AnimationPlayer").stop()
+	
+	
 func _on_StopButton_pressed():
 	print("The stop button is pressed.")
 	started = false
+	
+	godzila.stopped = true
+	kiwi.stopped = true
+	fox.stopped = true
 
+func _process(delta):
+	if started and start_frame >= run_speed:
+		run_game()
+		start_frame = 0
+		
+	start_frame += 1
+
+
+func _on_PlaySpeedButotn1_pressed():
+	run_speed = NORMAL_SPEED
+
+
+func _on_PlaySpeedButotn2_pressed():
+	run_speed = NORMAL_SPEED / 2.0
+
+
+func _on_PlaySpeedButotn3_pressed():
+	run_speed = NORMAL_SPEED / 3.0

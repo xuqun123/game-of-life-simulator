@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stylized Animated Fox
+* source:	https://sketchfab.com/3d-models/stylized-animated-fox-2e2fc88379364a129f520f96aa7c049b
+* author:	Dermack (https://sketchfab.com/Dermack)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stylized Animated Fox" (https://sketchfab.com/3d-models/stylized-animated-fox-2e2fc88379364a129f520f96aa7c049b) by Dermack (https://sketchfab.com/Dermack) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
