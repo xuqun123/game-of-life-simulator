@@ -63,7 +63,7 @@ stream = ExtResource( 11 )
 volume_db = 5.0
 
 [node name="Explosion" parent="Robot" instance=ExtResource( 21 )]
-transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0752236, 0.941971 )
+transform = Transform( 0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 0.0752236, 0.941971 )
 
 [node name="HexGrid" type="Spatial" parent="."]
 script = ExtResource( 1 )
