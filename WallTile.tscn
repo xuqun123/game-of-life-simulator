@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://WallTile.gd" type="Script" id=2]
+[ext_resource path="res://Tower Defense Assets/towerSquare_bottomA.glb" type="PackedScene" id=5]
+[ext_resource path="res://Tower Defense Assets/towerSquare_sampleD.glb" type="PackedScene" id=6]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 1.0058, 1.01925, 0.96768 )
+
+[node name="WallTile" type="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0 )
+script = ExtResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.499647, 0 )
+shape = SubResource( 1 )
+
+[node name="wall_corner" parent="." instance=ExtResource( 6 )]
+
+[node name="wall" parent="." instance=ExtResource( 5 )]
+visible = false

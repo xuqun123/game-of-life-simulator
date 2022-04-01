@@ -11,11 +11,10 @@ const TILE_MATERIALS = [
 
 const TILE_SIZE := 1.0
 const NORMAL_SPEED := 50
-const EMPTY_TILE = preload("res://EmptyTile.tscn")
 const CELL_TILE = preload("res://CellTile.tscn")
+const WALL_TILE = preload("res://WallTile.tscn")
 
 const GAME_UTILS = preload("res://Utils.gd")
-var audio_player
 
 var godzila
 var kiwi
@@ -32,8 +31,6 @@ var start_frame = 0
 
 func _ready() -> void:
 	generate_grid()
-		
-	audio_player = get_parent_spatial().get_node("AudioStreamPlayer")
 	
 	godzila = get_parent_spatial().get_node("Godzilla")
 	kiwi = get_parent_spatial().get_node("Kiwi")
@@ -42,9 +39,6 @@ func _ready() -> void:
 	godzilla_origin_pos = godzila.transform.origin
 	kiwi_origin_pos = kiwi.transform.origin
 	fox_origin_pos = fox.transform.origin
-	
-	if not audio_player.playing:
-		audio_player.play()
 
 func generate_grid():
 	var tile_index := 0
@@ -54,7 +48,33 @@ func generate_grid():
 		tile_coordinates.y = 0
 #		tile_coordinates.y = 0 if x % 2 == 0 else TILE_SIZE / 2
 		for y in range(grid_size):
-			var tile = EMPTY_TILE.instance()
+			var tile
+			if x == 0 || x == grid_size - 1:
+				tile = WALL_TILE.instance()
+				if (y == 0 || y == grid_size - 1):
+					pass
+				else:
+					tile.get_node("wall_corner").hide()
+					var wall = tile.get_node("wall")
+					wall.scale.z = 1.3
+					wall.show()
+				
+				tile.add_to_group("wall")
+			elif y == 0 || y == grid_size - 1:
+				tile = WALL_TILE.instance()
+				if (x == 0 || x == grid_size - 1):
+					pass
+				else:
+					tile.get_node("wall_corner").hide()
+					var wall = tile.get_node("wall")
+					wall.scale.x = 1.3
+					wall.show()
+				
+				tile.add_to_group("wall")
+			else:
+				tile = CELL_TILE.instance()
+				tile.add_to_group("cell")
+			
 			add_child(tile)
 			tile.translate(Vector3(tile_coordinates.x, 0, tile_coordinates.y))
 			tile_coordinates.y += TILE_SIZE
@@ -79,10 +99,11 @@ func enabled_disabled_cells():
 	var disabled_cells = []
 	
 	for i in range(len(cells)):
-		if cells[i].is_enabled == true:
-			enabled_cells.append(cells[i])
-		else:
-			disabled_cells.append(cells[i])			
+		if cells[i].is_in_group("cell"):
+			if cells[i].is_enabled == true:
+				enabled_cells.append(cells[i])
+			else:
+				disabled_cells.append(cells[i])			
 	
 	results.append(enabled_cells)
 	results.append(disabled_cells)
@@ -117,8 +138,9 @@ func reset_game():
 	var cells = get_children()
 	
 	for i in range(len(cells)):
-		cells[i].is_enabled = false
-		cells[i].get_node("unit_tile/tmpParent/tile").material_override = null
+		if cells[i].is_in_group("cell"):
+			cells[i].is_enabled = false
+			cells[i].get_node("unit_tile/tmpParent/tile").material_override = null
 		
 func neighbor_cells_count(cell):
 	var cells_count = 0

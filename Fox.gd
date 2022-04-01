@@ -1,4 +1,4 @@
-extends Spatial
+extends KinematicBody
 
 
 # Declare member variables here. Examples:
@@ -9,8 +9,11 @@ export var moving_frame = 0
 export var stopping_frame = 0
 export var stopped = false
 
+export var gravity = Vector3.DOWN * 9
+var velocity = Vector3.UP
+
 var rng = 0
-var walk_speeds = [0, 10, 20]
+var walk_speeds = [10, 20]
 var rotate_degrees = [-180, -90, 0, 90]
 
 
@@ -29,7 +32,8 @@ func _process(delta):
 			stopping_frame = 0
 			moving_frame = 0
 			moving = false
-		
+
+		velocity = gravity * delta
 		if !moving:
 			randomize()
 			rng = walk_speeds[randi() % walk_speeds.size()]
@@ -37,11 +41,18 @@ func _process(delta):
 
 			var rotate_degree = rotate_degrees[randi() % rotate_degrees.size()]
 			rotation.y = deg2rad(int(rotate_degree))
-		
+
 		if moving_frame >= 250 || rng == 0:
 			$AnimationPlayer.play("Armature|Cinematic001")	
 			stopping_frame += 1
 		else:
-			translate(Vector3(0, 0, rng))
+#			translate(Vector3(0, 0, rng))
+			velocity += transform.basis.z * rng
+			move_and_collide(velocity)
+			
 			$AnimationPlayer.play("Armature|walk_cycle")
 			moving_frame += 1
+		
+		velocity = Vector3.DOWN
+
+			

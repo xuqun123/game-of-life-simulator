@@ -1,4 +1,4 @@
-extends Spatial
+extends KinematicBody
 
 
 # Declare member variables here. Examples:
@@ -7,6 +7,9 @@ extends Spatial
 export var moving = false
 export var moving_frame = 0
 export var stopped = false
+
+export var gravity = Vector3.DOWN * 9
+var velocity = Vector3.UP
 
 var rng = 0
 var walk_speeds = [0, 0.002, 0.003]
@@ -23,7 +26,8 @@ func _process(delta):
 	if !stopped:
 		if not $AnimationPlayer.is_playing():
 			$AnimationPlayer.play("Take 001")
-			
+		
+		velocity = gravity * delta
 		if !moving:
 			randomize()
 			rng = walk_speeds[randi() % walk_speeds.size()]
@@ -36,5 +40,9 @@ func _process(delta):
 			moving_frame = 0
 			moving = false
 		else:
-			translate(Vector3(0, 0, rng))
+#			translate(Vector3(0, 0, rng))
+			velocity += transform.basis.z * rng
+			move_and_collide(velocity)
 			moving_frame += 1
+	
+		velocity = Vector3.DOWN
