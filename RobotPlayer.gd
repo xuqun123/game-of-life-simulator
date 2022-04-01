@@ -14,11 +14,11 @@ export (int) var dance_frame = 0
 export var gravity = Vector3.DOWN * 9
 var velocity = Vector3.ZERO
 export var speed = 5
+var hex_grid
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print(int(179.99))
-	pass
+	hex_grid = get_parent_spatial().get_node("HexGrid")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -29,6 +29,7 @@ func _physics_process(delta):
 		else:
 			$AnimationPlayer.play("Robot_Idle")
 			dance_frame += 1
+		print()
 			
 	velocity += gravity * delta
 	get_input_keyboard(delta)	
@@ -80,13 +81,13 @@ func set_velocity_with_rotate(degree):
 func walk_the_robot():
 	if not $WalkingPlayer.playing: 
 		$WalkingPlayer.play()
-#	translate(Vector3(0, 0, walk_speed))
-	move_and_collide(velocity, false)
 	$AnimationPlayer.play("Robot_Walking")
+	
+	var collison = move_and_collide(velocity, false)
+	detect_collision(collison)
 	
 func is_robot_dead():
 	if !dead && !jumping:
-		var hex_grid = get_parent_spatial().get_node("HexGrid")
 		if hex_grid.started:
 			var cells = hex_grid.get_children()
 			
@@ -96,12 +97,36 @@ func is_robot_dead():
 					if round(translation.x) == round(cells[i].translation.x) and \
 						round(translation.y) == round(cells[i].translation.y) and \
 						round(translation.z) == round(cells[i].translation.z):
-							hex_grid.started = false
-							$AnimationPlayer.play("Robot_Death")
-							if not $DeathPlayer.playing: 
-								$DeathPlayer.play()
-							dead = true
-							yield(get_tree().create_timer(0.5), "timeout")
-							self.hide()
-							hex_grid.started = true
+							kill_robot()
 					
+func detect_collision(collision):
+	if collision and hex_grid.started:
+		var collider = collision.get_collider()
+		var collision_pos = collision.get_position()
+		
+		if collider.name == "Fox":
+			if collision.get_collider_shape().get_name() == 'HeadCollisionShape':
+				print("Robot hits Fox head at: ", collision_pos)
+				kill_robot()
+		elif collider.name == "Kiwi":
+			if collision.get_collider_shape().get_name() == 'HeadCollisionShape':
+				print("Robot hits Kiwi head at: ", collision_pos)
+				kill_robot()
+		elif collider.name == "Godzilla":
+			print("Robot hits Godzilla at: ", collision_pos)
+			kill_robot()
+
+func kill_robot():
+	if !dead && !jumping:
+		hex_grid.started = false
+		if not $DeathPlayer.playing:
+			$DeathPlayer.play()
+		$AnimationPlayer.play("Robot_Death")
+		
+		$Explosion.get_node("AnimationPlayer").play("Animation")
+			
+		dead = true
+		yield(get_tree().create_timer(0.5), "timeout")
+		
+		self.hide()
+		hex_grid.started = true

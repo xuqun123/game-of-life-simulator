@@ -12,17 +12,20 @@ export var gravity = Vector3.DOWN * 9
 var velocity = Vector3.UP
 
 var rng = 0
-var walk_speeds = [0, 0.002, 0.003]
+var walk_speeds = [0, 0.01, 0.02]
 var rotate_degrees = [-180, -90, 0, 90]
 
+var robot
+var grid
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	robot = get_parent_spatial().get_node("Robot")
+	grid = get_parent_spatial().get_node("HexGrid")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	if !stopped:
 		if not $AnimationPlayer.is_playing():
 			$AnimationPlayer.play("Take 001")
@@ -42,7 +45,21 @@ func _process(delta):
 		else:
 #			translate(Vector3(0, 0, rng))
 			velocity += transform.basis.z * rng
-			move_and_collide(velocity)
+			var collision = move_and_collide(velocity)
 			moving_frame += 1
+			
+			detect_collision(collision)
 	
 		velocity = Vector3.DOWN
+
+func detect_collision(collison):
+	if collison and grid.started:
+		var collider = collison.get_collider()
+		var collison_pos = collison.get_position()
+
+		if collider.name == "Robot":
+			print(collison.get_collider_shape().get_name())
+			if collison.get_local_shape().get_name() == 'HeadCollisionShape':
+				print("Kiwi head hits Robot at: ", collison_pos)
+				robot.kill_robot()
+		

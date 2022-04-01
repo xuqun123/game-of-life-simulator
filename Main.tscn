@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://HexGrid.gd" type="Script" id=1]
 [ext_resource path="res://Camera.tscn" type="PackedScene" id=2]
@@ -20,6 +20,7 @@
 [ext_resource path="res://Camera.gd" type="Script" id=18]
 [ext_resource path="res://MuteButton.gd" type="Script" id=19]
 [ext_resource path="res://Main.gd" type="Script" id=20]
+[ext_resource path="res://Explosion.tscn" type="PackedScene" id=21]
 
 [node name="Main" type="Spatial"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00546169, 0, 0.00627017 )
@@ -30,7 +31,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 20 )
 script = ExtResource( 17 )
 
 [node name="Kiwi" parent="." instance=ExtResource( 14 )]
-transform = Transform( 15, 0, 0, 0, 15, 0, 0, 0, 15, 10, 0, 20 )
+transform = Transform( 15, 0, 0, 0, 15, 0, 0, 0, 15, 15, 0, 15 )
 script = ExtResource( 15 )
 
 [node name="Fox" parent="." instance=ExtResource( 12 )]
@@ -60,6 +61,9 @@ pitch_scale = 1.5
 [node name="JumpingPlayer" type="AudioStreamPlayer" parent="Robot"]
 stream = ExtResource( 11 )
 volume_db = 5.0
+
+[node name="Explosion" parent="Robot" instance=ExtResource( 21 )]
+transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.0752236, 0.941971 )
 
 [node name="HexGrid" type="Spatial" parent="."]
 script = ExtResource( 1 )
