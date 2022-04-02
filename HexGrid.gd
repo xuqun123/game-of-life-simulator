@@ -19,12 +19,11 @@ const GAME_UTILS = preload("res://Utils.gd")
 var godzila
 var kiwi
 var fox
-var godzilla_origin_pos
-var fox_origin_pos
-var kiwi_origin_pos
+var robot
 
 export (int, 2, 20) var grid_size := 30
 export (float) var run_speed = 50.0
+export (int) var enabled_cells_count = 0
 
 var started = false
 var start_frame = 0
@@ -35,11 +34,10 @@ func _ready() -> void:
 	godzila = get_parent_spatial().get_node("Godzilla")
 	kiwi = get_parent_spatial().get_node("Kiwi")
 	fox = get_parent_spatial().get_node("Fox")
+	robot = get_parent_spatial().get_node("Robot")
 	
-	godzilla_origin_pos = godzila.transform.origin
-	kiwi_origin_pos = kiwi.transform.origin
-	fox_origin_pos = fox.transform.origin
-
+	set_nodes_positions()
+	
 func generate_grid():
 	var tile_index := 0
 	for x in range(grid_size):
@@ -173,9 +171,8 @@ func neighbor_cells_count(cell):
 	
 func _on_StartButton_pressed():
 	print("The start button is pressed.")
-
-	print(enabled_disabled_cells())
 	started = true
+	set_enabled_cells_count()
 	
 	godzila.stopped = false
 	kiwi.stopped = false
@@ -185,21 +182,17 @@ func _on_StartButton_pressed():
 func _on_ResetButton_pressed():
 	print("The reset button is pressed.")
 	started = false
+	
 	reset_game()
+	set_nodes_positions()
 	
-	var robot = get_parent_spatial().get_node("Robot")
-	robot.dead = false
-	robot.show()
-	
-	godzila.transform.origin = godzilla_origin_pos
-	kiwi.transform.origin = kiwi_origin_pos
-	fox.transform.origin = fox_origin_pos
-	
+	robot.reset()
 	godzila.stopped = true
+	godzila.stop_fire()
+	
 	kiwi.stopped = true
 	fox.stopped = true
 	fox.get_node("AnimationPlayer").stop()
-	
 	
 func _on_StopButton_pressed():
 	print("The stop button is pressed.")
@@ -216,14 +209,45 @@ func _process(delta):
 		
 	start_frame += 1
 
-
 func _on_PlaySpeedButotn1_pressed():
 	run_speed = NORMAL_SPEED
-
+	set_npc_speeds(1)
 
 func _on_PlaySpeedButotn2_pressed():
 	run_speed = NORMAL_SPEED / 2.0
-
+	set_npc_speeds(3)
 
 func _on_PlaySpeedButotn3_pressed():
 	run_speed = NORMAL_SPEED / 3.0
+	set_npc_speeds(5)
+	
+func set_npc_speeds(factor):
+	godzila.moving = false
+	godzila.speed_factor = factor
+	
+	fox.moving = false
+	fox.speed_factor = factor	
+	
+	kiwi.moving = false
+	kiwi.speed_factor = factor
+	
+func set_enabled_cells_count():
+	var cells = get_children()
+	var results = []
+
+	for i in range(len(cells)):
+		if cells[i].is_in_group("cell") && cells[i].is_enabled == true:
+			results.append(cells[i])
+	
+	enabled_cells_count = len(results)
+	print("{count} cells have been enabled!".format({"count": enabled_cells_count}))
+
+func get_random_position():
+	randomize()
+	return Vector3(randi() % (grid_size - 10) + 5, 0, randi() % (grid_size - 10) + 5)
+	
+func set_nodes_positions():
+	godzila.transform.origin = get_random_position()
+	kiwi.transform.origin = get_random_position()
+	fox.transform.origin = get_random_position() + Vector3.UP
+	robot.transform.origin = get_random_position()

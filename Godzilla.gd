@@ -7,6 +7,7 @@ extends KinematicBody
 export var moving = false
 export var moving_frame = 0
 export var stopped = false
+export var speed_factor = 1
 
 export var gravity = Vector3.DOWN * 20
 var velocity = Vector3.ZERO
@@ -14,6 +15,9 @@ var velocity = Vector3.ZERO
 var rng = 0
 var walk_speeds = [0.05, 0.1]
 var rotate_degrees = [-180, -90, 0, 90]
+
+var firing = false
+var firing_frame = 0
 
 var robot
 var grid
@@ -34,20 +38,29 @@ func _physics_process(delta):
 		velocity = gravity * delta
 		if !moving:
 			randomize()
-			rng = walk_speeds[randi() % walk_speeds.size()]
+			rng = speed_factor * walk_speeds[randi() % walk_speeds.size()]
 			moving = true
 
 			var rotate_degree = rotate_degrees[randi() % rotate_degrees.size()]
 			rotation.y = deg2rad(int(rotate_degree))
 		
+		if moving_frame >= 100:
+			make_fire()
+
 		if moving_frame >= 250 || rng == 0:
 			moving_frame = 0
 			moving = false
 		else:
+			if firing:
+				if firing_frame >= 200:
+					stop_fire()
+				else:
+					firing_frame += 1
+
 			velocity += transform.basis.z * rng
 			var collision = move_and_collide(velocity)
 			moving_frame += 1
-		
+			
 			detect_collision(collision)
 	
 		velocity = Vector3.DOWN
@@ -60,4 +73,22 @@ func detect_collision(collison):
 		if collider.name == "Robot":
 			print("Godzilla hits Robot at: ", collison_pos)
 			robot.kill_robot()
+		
+func make_fire():
+	$Fire.get_node("Particles").emitting = true
+	firing = true
+	if not $FireAudioPlayer.playing:
+		$FireAudioPlayer.play()
+
+	
+func stop_fire():
+	$Fire.get_node("Particles").emitting = false
+	firing = false
+	firing_frame = 0
+
+
+func _on_FiringArea_body_shape_entered(body_rid, body, body_shape_index, local_shape_index):
+	if grid.started && firing && body.name == 'Robot':
+		print("Godzilla fire hits Robot")
+		robot.kill_robot()
 		

@@ -8,6 +8,7 @@ export var moving = false
 export var moving_frame = 0
 export var stopping_frame = 0
 export var stopped = false
+export var speed_factor = 1
 
 export var gravity = Vector3.DOWN * 9
 var velocity = Vector3.UP
@@ -39,7 +40,7 @@ func _physics_process(delta):
 		velocity = gravity * delta
 		if !moving:
 			randomize()
-			rng = walk_speeds[randi() % walk_speeds.size()]
+			rng = speed_factor * walk_speeds[randi() % walk_speeds.size()]
 			moving = true
 
 			var rotate_degree = rotate_degrees[randi() % rotate_degrees.size()]

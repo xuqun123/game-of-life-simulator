@@ -21,3 +21,5 @@ static func on_off(cell):
 
 static func get_tile_material(tile_index: int):
 	return TILE_MATERIALS[tile_index]
+
+	
