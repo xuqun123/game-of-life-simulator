@@ -20,6 +20,7 @@ var godzila
 var kiwi
 var fox
 var robot
+var armed_ufo
 
 export (int, 2, 20) var grid_size := 30
 export (float) var run_speed = 50.0
@@ -35,6 +36,7 @@ func _ready() -> void:
 	kiwi = get_parent_spatial().get_node("Kiwi")
 	fox = get_parent_spatial().get_node("Fox")
 	robot = get_parent_spatial().get_node("Robot")
+	armed_ufo = get_parent_spatial().get_node("ArmedUFO")
 	
 	set_nodes_positions()
 	
@@ -177,6 +179,7 @@ func _on_StartButton_pressed():
 	godzila.stopped = false
 	kiwi.stopped = false
 	fox.stopped = false
+	armed_ufo.stopped = false
 	fox.get_node("AnimationPlayer").stop()
 
 func _on_ResetButton_pressed():
@@ -191,8 +194,12 @@ func _on_ResetButton_pressed():
 	godzila.stop_fire()
 	
 	kiwi.stopped = true
+	
 	fox.stopped = true
 	fox.get_node("AnimationPlayer").stop()
+	
+	armed_ufo.stopped = true
+	armed_ufo.reset_bow()
 	
 func _on_StopButton_pressed():
 	print("The stop button is pressed.")
@@ -201,6 +208,7 @@ func _on_StopButton_pressed():
 	godzila.stopped = true
 	kiwi.stopped = true
 	fox.stopped = true
+	armed_ufo.stopped = true
 
 func _process(delta):
 	if started and start_frame >= run_speed:
@@ -231,6 +239,9 @@ func set_npc_speeds(factor):
 	kiwi.moving = false
 	kiwi.speed_factor = factor
 	
+	armed_ufo.moving = false
+	armed_ufo.speed_factor = factor
+	
 func set_enabled_cells_count():
 	var cells = get_children()
 	var results = []
@@ -251,3 +262,4 @@ func set_nodes_positions():
 	kiwi.transform.origin = get_random_position()
 	fox.transform.origin = get_random_position() + Vector3.UP
 	robot.transform.origin = get_random_position()
+	armed_ufo.transform.origin = get_random_position() + Vector3(0, 5, 0)

@@ -16,5 +16,15 @@ func _on_MuteButton_pressed():
 	else:
 		$AudioStreamPlayer.play()
 		$MuteButton.text = "MUTE"
-	
-	
+
+
+func _on_FollowModeButton_pressed():
+	var camera = $Robot.get_node("Camera")
+	if !camera.enabled:
+		camera.enabled = true
+		camera.make_current()
+		$FollowModeButton.text = "UNFOLLOW"
+	else:
+		camera.enabled = false
+		camera.clear_current()
+		$FollowModeButton.text = "FOLLOW BOT"

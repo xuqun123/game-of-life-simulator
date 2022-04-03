@@ -1,20 +1,36 @@
 extends Camera
 
-export var lerp_speed = 3.0
+export var lerp_speed = 1.0
 export (NodePath) var target_path = null
-export (Vector3) var offset = Vector3(0, 20, 5)
+export (Vector3) var offset = Vector3(0, 20, 30)
+export (bool) var enabled = false
 
 var target = null
 
 func _ready():
-	clear_current()
 	if target_path:
 		target = get_node(target_path)
-		print(target)
 
 func _physics_process(delta):
-	if !target:
+	if !target || !enabled:
 		return
+
+	var rotate_degree = round(rad2deg(target.rotation.y))
+		
 	var target_pos = target.global_transform.translated(offset)
-	global_transform = global_transform.interpolate_with(target_pos, lerp_speed * delta)
+	global_transform = target_pos
+	
 	look_at(target.global_transform.origin, Vector3.UP)
+	rotate_y(-target.rotation.y)
+	
+	if rotate_degree == 0:
+		translation.x = 0
+	elif rotate_degree == 180:
+		translation.z = -30
+	elif rotate_degree == -90:
+		translation.z = 0
+		translation.x = 30
+	elif rotate_degree == 90:
+		translation.z = 0
+		translation.x = -30
+

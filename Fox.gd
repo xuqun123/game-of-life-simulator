@@ -46,7 +46,7 @@ func _physics_process(delta):
 			var rotate_degree = rotate_degrees[randi() % rotate_degrees.size()]
 			rotation.y = deg2rad(int(rotate_degree))
 
-		if moving_frame >= 250 || rng == 0:
+		if moving_frame >= (250 / speed_factor) || rng == 0:
 			$AnimationPlayer.play("Armature|Cinematic001")	
 			stopping_frame += 1
 		else:

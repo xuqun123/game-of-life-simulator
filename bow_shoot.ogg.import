@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/bow_shoot.ogg-a72d726e297084c171604b813369d1c2.oggstr"
+
+[deps]
+
+source_file="res://bow_shoot.ogg"
+dest_files=[ "res://.import/bow_shoot.ogg-a72d726e297084c171604b813369d1c2.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

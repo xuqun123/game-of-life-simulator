@@ -48,35 +48,39 @@ func get_input_keyboard(delta):
 	# Rotate outer gimbal around y axis
 	var y_rotation = 0
 	if Input.is_action_pressed("cam_right"):
+		$InnerGimbal/Camera.make_current()
 		y_rotation += -1
 	if Input.is_action_pressed("cam_left"):
+		$InnerGimbal/Camera.make_current()
 		y_rotation += +1
 	rotate(Vector3.RIGHT, y_rotation * rotation_speed * delta)
 	
 	if Input.is_action_pressed("move_right"):
+		$InnerGimbal/Camera.make_current()
 		global_translate(Vector3(move_rate, 0, 0))
+		
 	if Input.is_action_pressed("move_left"):
+		$InnerGimbal/Camera.make_current()
 		global_translate(Vector3(-move_rate, 0, 0))
-	
+		
 	# Rotate inner gimbal around local x axis
 	var x_rotation = 0
 	if Input.is_action_pressed("move_forward"):
-#		x_rotation += 1
+		$InnerGimbal/Camera.make_current()
 		global_translate(Vector3(0, 0, -move_rate))
 	if Input.is_action_pressed("move_backward"):
-#		x_rotation += -1
+		$InnerGimbal/Camera.make_current()
 		global_translate(Vector3(0, 0, move_rate))
-#	x_rotation = -x_rotation if invert_y else x_rotation
-#	$InnerGimbal.rotate_object_local(Vector3.RIGHT, x_rotation * rotation_speed * delta)
 	
 	if Input.is_action_pressed("cam_zoom_in"):
+		$InnerGimbal/Camera.make_current()
 		zoom -= zoom_speed
 	if Input.is_action_pressed("cam_zoom_out"):
+		$InnerGimbal/Camera.make_current()
 		zoom += zoom_speed
 	zoom = clamp(zoom, min_zoom, max_zoom)
 
 func _process(delta):
-#	if !mouse_control:
 	get_input_keyboard(delta)
 	$InnerGimbal.rotation.x = clamp($InnerGimbal.rotation.x, -0.7, 0.6)
 	scale = lerp(scale, Vector3.ONE * zoom, zoom_speed)

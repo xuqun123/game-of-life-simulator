@@ -85,10 +85,12 @@ func get_input_keyboard(delta):
 		velocity.y = vy
 
 func set_velocity_with_rotate(degree):
+	if $Camera.enabled:
+		$Camera.make_current()
 	var current_rotation_deg = int(round(rad2deg(rotation.y)))	
 	if current_rotation_deg != degree:
 		rotation.y = deg2rad(int(degree))
-#		$Camera.rotation.y = deg2rad(int(degree))
+#		$Camera.set_rota
 		
 	velocity += transform.basis.z * speed * (50.0 / hex_grid.run_speed )
 		

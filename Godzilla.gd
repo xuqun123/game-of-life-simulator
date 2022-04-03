@@ -44,15 +44,15 @@ func _physics_process(delta):
 			var rotate_degree = rotate_degrees[randi() % rotate_degrees.size()]
 			rotation.y = deg2rad(int(rotate_degree))
 		
-		if moving_frame >= 100:
+		if moving_frame >= (100 / speed_factor):
 			make_fire()
 
-		if moving_frame >= 250 || rng == 0:
+		if moving_frame >= (250 / speed_factor) || rng == 0:
 			moving_frame = 0
 			moving = false
 		else:
 			if firing:
-				if firing_frame >= 200:
+				if firing_frame >= (200 / speed_factor):
 					stop_fire()
 				else:
 					firing_frame += 1

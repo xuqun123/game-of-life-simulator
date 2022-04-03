@@ -5,14 +5,14 @@
 [ext_resource path="res://Tower Defense Assets/towerSquare_sampleD.glb" type="PackedScene" id=6]
 
 [sub_resource type="BoxShape" id=1]
-extents = Vector3( 1.0058, 1.01925, 0.96768 )
+extents = Vector3( 0.504899, 2.2029, 0.499694 )
 
 [node name="WallTile" type="StaticBody"]
 transform = Transform( 1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0 )
 script = ExtResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.499647, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.19328, -0.00282866 )
 shape = SubResource( 1 )
 
 [node name="wall_corner" parent="." instance=ExtResource( 6 )]
