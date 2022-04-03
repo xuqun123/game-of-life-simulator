@@ -21,7 +21,7 @@ var grid
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	robot = get_parent_spatial().get_node("Robot")
-	grid = get_parent_spatial().get_node("HexGrid")
+	grid = get_parent_spatial().get_node("Grid")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

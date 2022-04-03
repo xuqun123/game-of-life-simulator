@@ -32,7 +32,7 @@ var shooting_arrow
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	robot = get_parent_spatial().get_node("Robot")
-	grid = get_parent_spatial().get_node("HexGrid")
+	grid = get_parent_spatial().get_node("Grid")
 	shooting_arrow = $ShootingArrow
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -118,15 +118,15 @@ func arrow_detect_collision(collision):
 		var collider = collision.get_collider()
 		var collision_pos = collision.get_position()
 		
-		if "Tile" in collider.name || collider.name == "Fox" || collider.name == "Godzilla" || collider.name == "Kiwi":
-			reset_bow()
-		elif collider.name == "Robot":
+		if collider.name == "Robot":
 			print(collision.get_collider_shape().get_name())
 			print("Arrow hits Robot at: ", collision_pos)
 			reset_bow()
 			
 			if grid.started:
 				robot.kill_robot()
+		elif collider.name && collider.name != "ArmedUFO":
+			reset_bow()
 
 func reset_bow():
 	shooting = false

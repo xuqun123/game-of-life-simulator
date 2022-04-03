@@ -15,10 +15,10 @@ func _ready():
 #func _process(delta):
 #	pass
 
-func _on_CellTile_input_event(camera, event, position, normal, shape_idx):
+func _on_CellTile_input_event(_camera, event, position, _normal, _shape_idx):
 	if event is InputEventMouseButton && event.button_index == BUTTON_LEFT && event.pressed:
-		print(OS.get_unix_time(), ": call me here... ", position)
-		print("tile loc: ", self.translation)
+		print(OS.get_unix_time(), ": click position - ", position)
+		print("tile loc: ", self.translation, " ", self.name)
 		
 		GAME_UTILS.on_off(self)
 		

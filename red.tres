@@ -2,3 +2,5 @@
 
 [resource]
 albedo_color = Color( 1, 0.439216, 0.439216, 1 )
+metallic = 0.2
+uv1_triplanar_sharpness = 5.27803

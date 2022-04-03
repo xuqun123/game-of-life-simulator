@@ -11,7 +11,7 @@ func _ready():
 	if target_path:
 		target = get_node(target_path)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if !target || !enabled:
 		return
 

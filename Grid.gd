@@ -22,15 +22,45 @@ var fox
 var robot
 var armed_ufo
 
-export (int, 2, 20) var grid_size := 30
+export (int) var grid_size := 30
 export (float) var run_speed = 50.0
 export (int) var enabled_cells_count = 0
 
+export (PoolIntArray) var tile_straight_cells = []
+export (PoolIntArray) var tile_straight_rotate_cells = []
+export (PoolIntArray) var tile_crossing_cells = []
+export (PoolIntArray) var tile_river_cells = []
+export (PoolIntArray) var tile_river_bridge_cells = [325, 460, 470, 605]
+export (PoolIntArray) var tile_river_corner_cells = [455, 475]
+export (PoolIntArray) var tile_double_tree_cells = [143, 213, 237, 373, 393, 414, 439, 486, 496, 517, 523, 536, 558, 745, 787]
+export (PoolIntArray) var tile_rock_cells = [87, 93, 127, 234, 246, 383, 447, 533, 597, 667, 783, 687, 833]
+
+export (PoolIntArray) var snow_tile_cells = []
+export (PoolIntArray) var snow_tile_straight_cells = []
+export (PoolIntArray) var snow_tile_crossing_cells = [310, 320, 610, 620]
+export (PoolIntArray) var snow_tile_quad_tree_cells = [105, 222, 289, 681, 735, 822]
+
 var started = false
 var start_frame = 0
+var cells = []
 
 func _ready() -> void:
 	generate_grid()
+	cells = get_children()
+	
+	add_tile_straight_cells()
+	add_tile_straight_rotate_cells()
+	add_tile_crossing_cells()
+	add_tile_river_cells()
+	add_tile_river_bridge_cells()
+	add_tile_river_corner_cells()
+	add_tile_double_tree_cells()
+	add_tile_rock_cells()
+	
+	add_snow_tile_cells()
+	add_snow_tile_straight_cells()
+	add_snow_tile_crossing_cells()
+	add_snow_tile_quad_tree_cells()
 	
 	godzila = get_parent_spatial().get_node("Godzilla")
 	kiwi = get_parent_spatial().get_node("Kiwi")
@@ -46,7 +76,7 @@ func generate_grid():
 		var tile_coordinates := Vector2.ZERO
 		tile_coordinates.x = x * TILE_SIZE
 		tile_coordinates.y = 0
-#		tile_coordinates.y = 0 if x % 2 == 0 else TILE_SIZE / 2
+
 		for y in range(grid_size):
 			var tile
 			if x == 0 || x == grid_size - 1:
@@ -79,21 +109,143 @@ func generate_grid():
 			tile.translate(Vector3(tile_coordinates.x, 0, tile_coordinates.y))
 			tile_coordinates.y += TILE_SIZE
 			
-#			var node = tile.get_node("unit_tile/tmpParent/tile")
-			#			node.material_override = get_tile_material(tile_index)
-			
-#			var node = tile.get_node("blockSnowRoundedLow/tmpParent/blockSnowRoundedLow")
-#			node.material_override = DEFAULT_TILE_MATERIAL
-#			tile.get_node("unit_hex/mergedBlocks(Clone)").material_override = get_tile_material(tile_index)
-			
 			tile_index += 1
+			
+func add_tile_straight_cells():	
+	if tile_straight_cells.empty():
+		for i in range(grid_size - 1):
+			tile_straight_cells.append(300 + i)
+			tile_straight_cells.append(600 + i)
 
+	for i in tile_straight_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "tile_straight")
+
+func add_tile_straight_rotate_cells():	
+	if tile_straight_rotate_cells.empty():
+		for i in range(grid_size - 1):
+			tile_straight_rotate_cells.append(i*30 + 10)	
+			tile_straight_rotate_cells.append(i*30 + 20)	
+			
+	for i in tile_straight_rotate_cells:
+		if cells[i].is_in_group("cell"):
+			cells[i].rotation.y = deg2rad(90)
+			enable_cell_tile(cells[i], "tile_straight")
+			
+func add_tile_crossing_cells():	
+	for i in tile_crossing_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "tile_crossing")
+
+func add_tile_river_cells():	
+	if tile_river_cells.empty():
+		for i in range(grid_size - 15):
+			tile_river_cells.append(i*30 + 25)
+		for i in range(grid_size - 15):
+			tile_river_cells.append(i*30 + 5 + 450)
+		for i in range(grid_size - 10):
+			tile_river_cells.append(455 + i)
+			
+	for i in tile_river_cells:
+		if cells[i].is_in_group("cell"):
+			if i < 455 || i > 480:
+				cells[i].rotation.y = deg2rad(90)
+			enable_cell_tile(cells[i], "tile_riverStraight")
+			
+func add_tile_river_bridge_cells():	
+	for i in tile_river_bridge_cells:
+		if cells[i].is_in_group("cell"):
+			if i > 455 && i < 480:
+				cells[i].rotation.y = deg2rad(180)
+			enable_cell_tile(cells[i], "tile_riverBridge")
+
+func add_tile_river_corner_cells():	
+	for i in tile_river_corner_cells:
+		if cells[i].is_in_group("cell"):
+			if i <= 455:
+				cells[i].rotation.y = deg2rad(180)
+			enable_cell_tile(cells[i], "tile_riverCorner")
+			
+func add_tile_double_tree_cells():
+	for i in tile_double_tree_cells:
+		if cells[i].is_in_group("cell"):
+#			cells[i].rotation.y = deg2rad(180)
+			enable_cell_tile(cells[i], "tile_treeDouble", true)
+
+func add_tile_rock_cells():
+	for i in tile_rock_cells:
+		if cells[i].is_in_group("cell"):
+#			cells[i].rotation.y = deg2rad(180)
+			enable_cell_tile(cells[i], "tile_rock", true)	
+			
+func add_snow_tile_cells():	
+	if snow_tile_cells.empty():
+		for i in range(10):
+			snow_tile_cells.append(i*30 + 9)
+			snow_tile_cells.append(i*30 + 21)
+			if 630 + i*30 + 9 < 900:
+				snow_tile_cells.append(630 + i*30 + 9)
+			if 630 + i*30 + 21 < 900:
+				snow_tile_cells.append(630 + i*30 + 21)
+			
+			for j in range(9):
+				snow_tile_cells.append(i*30 + 11 + j)
+				if 630 + i*30 + 10 + j < 900:
+					snow_tile_cells.append(630 + i*30 + 11 + j)
+		
+		for i in range(13):
+			snow_tile_cells.append(330 + i + 9)
+			snow_tile_cells.append(570 + i + 9)
+
+	for i in snow_tile_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "snow_tile")
+
+func add_snow_tile_straight_cells():	
+	if snow_tile_straight_cells.empty():
+		for i in range(12):
+			snow_tile_straight_cells.append(i*30 + 10)
+			snow_tile_straight_cells.append(i*30 + 20)
+		for i in range(10):
+			snow_tile_straight_cells.append(570 + i*30 + 10)
+			snow_tile_straight_cells.append(570 + i*30 + 20)
+			
+		for i in range(13):
+			snow_tile_straight_cells.append(300 + i + 9)
+			snow_tile_straight_cells.append(600 + i + 9)
+
+	for i in snow_tile_straight_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "snow_tile_straight")
+
+func add_snow_tile_crossing_cells():	
+	for i in snow_tile_crossing_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "snow_tile_crossing")
+			
+func add_snow_tile_quad_tree_cells():	
+	for i in snow_tile_quad_tree_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "snow_tile_treeQuad", true)
+
+func enable_cell_tile(cell, enabled_tile_name, enable_collision = false):
+	var children = cell.get_children()
+	
+	for i in range(len(children)):
+		if children[i].name != "CollisionShape":
+			if enabled_tile_name == children[i].name:
+				children[i].visible = true
+				if enable_collision:
+					children[i].get_node("StaticBody/CollisionShape").disabled = false
+			else:
+				children[i].visible = false
+		
+			
 func get_tile_material(tile_index: int):
 	var index = tile_index % TILE_MATERIALS.size()
 	return TILE_MATERIALS[index]
 
 func enabled_disabled_cells():
-	var cells = get_children()
 	var results = []
 	var enabled_cells = []
 	var disabled_cells = []
@@ -140,7 +292,13 @@ func reset_game():
 	for i in range(len(cells)):
 		if cells[i].is_in_group("cell"):
 			cells[i].is_enabled = false
-			cells[i].get_node("unit_tile/tmpParent/tile").material_override = null
+			
+			var children = cells[i].get_children()
+			for j in range(len(children)):
+				if children[j].name != "CollisionShape":
+					var node_name = "tmpParent/{tile_name}".format({"tile_name": children[j].name})
+					print(children[j].name, " ", node_name)
+					children[j].get_node(node_name).material_override = null
 		
 func neighbor_cells_count(cell):
 	var cells_count = 0
@@ -210,7 +368,7 @@ func _on_StopButton_pressed():
 	fox.stopped = true
 	armed_ufo.stopped = true
 
-func _process(delta):
+func _process(_delta):
 	if started and start_frame >= run_speed:
 		run_game()
 		start_frame = 0

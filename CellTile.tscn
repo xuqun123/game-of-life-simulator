@@ -1,10 +1,24 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://CellTile.gd" type="Script" id=1]
-[ext_resource path="res://tile.glb" type="PackedScene" id=2]
+[ext_resource path="res://Tower Defense Assets/snow_tile_straight.glb" type="PackedScene" id=2]
+[ext_resource path="res://Tower Defense Assets/tile_straight.glb" type="PackedScene" id=3]
+[ext_resource path="res://Tower Defense Assets/tile_crossing.glb" type="PackedScene" id=4]
+[ext_resource path="res://Tower Defense Assets/tile_riverStraight.glb" type="PackedScene" id=5]
+[ext_resource path="res://Tower Defense Assets/tile_riverBridge.glb" type="PackedScene" id=6]
+[ext_resource path="res://Tower Defense Assets/tile_riverCorner.glb" type="PackedScene" id=7]
+[ext_resource path="res://Tower Defense Assets/snow_tile.glb" type="PackedScene" id=8]
+[ext_resource path="res://Tower Defense Assets/tile.glb" type="PackedScene" id=9]
+[ext_resource path="res://Tower Defense Assets/snow_tile_crossing.glb" type="PackedScene" id=10]
+[ext_resource path="res://Tower Defense Assets/tile_treeDouble.glb" type="PackedScene" id=11]
+[ext_resource path="res://Tower Defense Assets/tile_rock.glb" type="PackedScene" id=12]
+[ext_resource path="res://Tower Defense Assets/snow_tile_treeQuad.glb" type="PackedScene" id=13]
 
 [sub_resource type="BoxShape" id=1]
-extents = Vector3( 0.965375, 0.200849, 0.96768 )
+extents = Vector3( 0.998519, 0.189984, 0.965856 )
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 0.505748, 0.469066, 0.501011 )
 
 [node name="CellTile" type="StaticBody"]
 script = ExtResource( 1 )
@@ -13,7 +27,71 @@ script = ExtResource( 1 )
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.103003, 0 )
 shape = SubResource( 1 )
 
-[node name="unit_tile" parent="." instance=ExtResource( 2 )]
-transform = Transform( 0.96, 0.000725272, -0.000340168, -0.000696185, 1, 0.000215343, 0.000340324, -0.000224059, 0.96, 0, 0, 0 )
+[node name="tile" parent="." instance=ExtResource( 9 )]
+transform = Transform( 0.98, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, 0, 0 )
+
+[node name="tile_straight" parent="." instance=ExtResource( 3 )]
+visible = false
+
+[node name="tile_crossing" parent="." instance=ExtResource( 4 )]
+visible = false
+
+[node name="tile_riverStraight" parent="." instance=ExtResource( 5 )]
+visible = false
+
+[node name="tile_riverBridge" parent="." instance=ExtResource( 6 )]
+visible = false
+
+[node name="tile_riverCorner" parent="." instance=ExtResource( 7 )]
+visible = false
+
+[node name="snow_tile" parent="." instance=ExtResource( 8 )]
+transform = Transform( 0.98, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, 0, 0 )
+visible = false
+
+[node name="snow_tile_straight" parent="." instance=ExtResource( 2 )]
+visible = false
+
+[node name="snow_tile_crossing" parent="." instance=ExtResource( 10 )]
+visible = false
+
+[node name="tile_treeDouble" parent="." instance=ExtResource( 11 )]
+transform = Transform( 0.98, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, 0, 0 )
+visible = false
+
+[node name="StaticBody" type="KinematicBody" parent="tile_treeDouble"]
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="tile_treeDouble/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.469904, 0 )
+visible = false
+shape = SubResource( 2 )
+disabled = true
+
+[node name="tile_rock" parent="." instance=ExtResource( 12 )]
+transform = Transform( 0.98, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, 0, 0 )
+visible = false
+
+[node name="StaticBody" type="KinematicBody" parent="tile_rock"]
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="tile_rock/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.299552, 0 )
+visible = false
+shape = SubResource( 2 )
+disabled = true
+
+[node name="snow_tile_treeQuad" parent="." instance=ExtResource( 13 )]
+transform = Transform( 0.98, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, 0, 0 )
+visible = false
+
+[node name="StaticBody" type="KinematicBody" parent="snow_tile_treeQuad"]
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="snow_tile_treeQuad/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47977, 0 )
+visible = false
+shape = SubResource( 2 )
+disabled = true
 
 [connection signal="input_event" from="." to="." method="_on_CellTile_input_event"]

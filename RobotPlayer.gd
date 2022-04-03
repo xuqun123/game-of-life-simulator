@@ -19,12 +19,12 @@ var score = 0
 var highest_score = 0
 var score_frame = 0
 
-var hex_grid
+var grid
 var score_board
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	hex_grid = get_parent_spatial().get_node("HexGrid")
+	grid = get_parent_spatial().get_node("Grid")
 	score_board = get_parent_spatial().get_node("ScoreBoard")
 	set_score(score, highest_score)
 	
@@ -46,8 +46,8 @@ func _physics_process(delta):
 		walk_the_robot()
 	velocity = Vector3.DOWN
 	
-	if hex_grid.started && !dead && score_frame >= hex_grid.run_speed:
-		score += 1 + hex_grid.enabled_cells_count * 0.1 
+	if grid.started && !dead && score_frame >= grid.run_speed:
+		score += 1 + grid.enabled_cells_count * 0.1 
 		set_score(score, highest_score)
 		score_frame = 0
 
@@ -92,7 +92,7 @@ func set_velocity_with_rotate(degree):
 		rotation.y = deg2rad(int(degree))
 #		$Camera.set_rota
 		
-	velocity += transform.basis.z * speed * (50.0 / hex_grid.run_speed )
+	velocity += transform.basis.z * speed * (50.0 / grid.run_speed )
 		
 func walk_the_robot():
 	if not $WalkingPlayer.playing: 
@@ -104,8 +104,8 @@ func walk_the_robot():
 	
 func is_robot_dead():
 	if !dead && !jumping:
-		if hex_grid.started:
-			var cells = hex_grid.get_children()
+		if grid.started:
+			var cells = grid.get_children()
 			
 			for i in range(len(cells)):
 				if cells[i].is_enabled == true:
@@ -116,7 +116,7 @@ func is_robot_dead():
 							kill_robot()
 					
 func detect_collision(collision):
-	if collision and hex_grid.started:
+	if collision and grid.started:
 		var collider = collision.get_collider()
 		var collision_pos = collision.get_position()
 		
@@ -146,7 +146,7 @@ func reset():
 	
 func kill_robot():
 	if !dead && !jumping:
-		hex_grid.started = false
+		grid.started = false
 		if not $DeathPlayer.playing:
 			$DeathPlayer.play()
 		$AnimationPlayer.play("Robot_Death")
@@ -162,7 +162,7 @@ func kill_robot():
 		if highest_score < score:
 			set_score(score, score)
 		
-		hex_grid.started = true
+		grid.started = true
 		
 func set_score(new_score, new_highest_score):
 	score = new_score
