@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://CellTile.gd" type="Script" id=1]
 [ext_resource path="res://Tower Defense Assets/snow_tile_straight.glb" type="PackedScene" id=2]
@@ -13,12 +13,14 @@
 [ext_resource path="res://Tower Defense Assets/tile_treeDouble.glb" type="PackedScene" id=11]
 [ext_resource path="res://Tower Defense Assets/tile_rock.glb" type="PackedScene" id=12]
 [ext_resource path="res://Tower Defense Assets/snow_tile_treeQuad.glb" type="PackedScene" id=13]
+[ext_resource path="res://Tower Defense Assets/snow_tile_rock.glb" type="PackedScene" id=14]
+[ext_resource path="res://Tower Defense Assets/towerRound_sampleF.glb" type="PackedScene" id=15]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 0.998519, 0.189984, 0.965856 )
 
 [sub_resource type="BoxShape" id=2]
-extents = Vector3( 0.505748, 0.469066, 0.501011 )
+extents = Vector3( 0.505748, 0.713494, 0.487362 )
 
 [node name="CellTile" type="StaticBody"]
 script = ExtResource( 1 )
@@ -90,6 +92,30 @@ visible = false
 
 [node name="CollisionShape" type="CollisionShape" parent="snow_tile_treeQuad/StaticBody"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47977, 0 )
+visible = false
+shape = SubResource( 2 )
+disabled = true
+
+[node name="snow_tile_rock" parent="." instance=ExtResource( 14 )]
+visible = false
+
+[node name="StaticBody" type="KinematicBody" parent="snow_tile_rock"]
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="snow_tile_rock/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.316452, 0 )
+visible = false
+shape = SubResource( 2 )
+disabled = true
+
+[node name="towerRound_sampleF" parent="." instance=ExtResource( 15 )]
+visible = false
+
+[node name="StaticBody" type="KinematicBody" parent="towerRound_sampleF"]
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="towerRound_sampleF/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.722396, 0 )
 visible = false
 shape = SubResource( 2 )
 disabled = true

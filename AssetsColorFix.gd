@@ -6,7 +6,8 @@ extends Node
 
 export var path : String
 export var reverse : bool = false
-export var fix : bool = false setget run_fix
+# Enable this line when you want to adjust your tiles' material RGB colors
+#export var fix : bool = false setget run_fix
 
 func run_fix(v):
 	var dir = Directory.new()

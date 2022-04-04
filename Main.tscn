@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://Grid.gd" type="Script" id=1]
 [ext_resource path="res://Camera.tscn" type="PackedScene" id=2]
@@ -25,7 +25,6 @@
 [ext_resource path="res://ArmedUFO.tscn" type="PackedScene" id=23]
 [ext_resource path="res://ArmedUFO.gd" type="Script" id=24]
 [ext_resource path="res://ShootingArrow.tscn" type="PackedScene" id=25]
-[ext_resource path="res://Spatial.gd" type="Script" id=26]
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 1.86515
@@ -218,11 +217,6 @@ scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="AssetsColorFixingNode" type="Spatial" parent="."]
-script = ExtResource( 26 )
-path = "Tower Defense Assets"
-reverse = true
 
 [connection signal="body_shape_entered" from="Godzilla/Fire/FiringArea" to="Godzilla" method="_on_FiringArea_body_shape_entered"]
 [connection signal="ready" from="Robot" to="Robot" method="_on_Robot_ready"]

@@ -26,19 +26,22 @@ export (int) var grid_size := 30
 export (float) var run_speed = 50.0
 export (int) var enabled_cells_count = 0
 
-export (PoolIntArray) var tile_straight_cells = []
-export (PoolIntArray) var tile_straight_rotate_cells = []
-export (PoolIntArray) var tile_crossing_cells = []
-export (PoolIntArray) var tile_river_cells = []
-export (PoolIntArray) var tile_river_bridge_cells = [325, 460, 470, 605]
-export (PoolIntArray) var tile_river_corner_cells = [455, 475]
-export (PoolIntArray) var tile_double_tree_cells = [143, 213, 237, 373, 393, 414, 439, 486, 496, 517, 523, 536, 558, 745, 787]
-export (PoolIntArray) var tile_rock_cells = [87, 93, 127, 234, 246, 383, 447, 533, 597, 667, 783, 687, 833]
+var tile_straight_cells = []
+var tile_straight_rotate_cells = []
+var tile_crossing_cells = []
+var tile_river_cells = []
+var tile_river_bridge_cells = [325, 460, 470, 605]
+var tile_river_corner_cells = [455, 475]
+var tile_double_tree_cells = [143, 237, 246, 373, 393, 414, 486, 559, 523, 667, 833]
+var tile_rock_cells = [87, 93, 127, 447, 533, 783, 687]
 
-export (PoolIntArray) var snow_tile_cells = []
-export (PoolIntArray) var snow_tile_straight_cells = []
-export (PoolIntArray) var snow_tile_crossing_cells = [310, 320, 610, 620]
-export (PoolIntArray) var snow_tile_quad_tree_cells = [105, 222, 289, 681, 735, 822]
+var snow_tile_cells = []
+var snow_tile_straight_cells = []
+var snow_tile_crossing_cells = [310, 320, 610, 620]
+var snow_tile_quad_tree_cells = [105, 222, 681, 735, 822]
+var snow_tile_rock_cells = [168, 192, 798]
+
+var tower_round_cells = [379, 551, 652]
 
 var started = false
 var start_frame = 0
@@ -56,11 +59,13 @@ func _ready() -> void:
 	add_tile_river_corner_cells()
 	add_tile_double_tree_cells()
 	add_tile_rock_cells()
+	add_tower_round_cells()
 	
 	add_snow_tile_cells()
 	add_snow_tile_straight_cells()
 	add_snow_tile_crossing_cells()
 	add_snow_tile_quad_tree_cells()
+	add_snow_tile_rock_cells()
 	
 	godzila = get_parent_spatial().get_node("Godzilla")
 	kiwi = get_parent_spatial().get_node("Kiwi")
@@ -169,15 +174,18 @@ func add_tile_river_corner_cells():
 func add_tile_double_tree_cells():
 	for i in tile_double_tree_cells:
 		if cells[i].is_in_group("cell"):
-#			cells[i].rotation.y = deg2rad(180)
 			enable_cell_tile(cells[i], "tile_treeDouble", true)
 
 func add_tile_rock_cells():
 	for i in tile_rock_cells:
 		if cells[i].is_in_group("cell"):
-#			cells[i].rotation.y = deg2rad(180)
 			enable_cell_tile(cells[i], "tile_rock", true)	
-			
+
+func add_tower_round_cells():
+	for i in tower_round_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "towerRound_sampleF", true, true)	
+
 func add_snow_tile_cells():	
 	if snow_tile_cells.empty():
 		for i in range(10):
@@ -227,8 +235,13 @@ func add_snow_tile_quad_tree_cells():
 	for i in snow_tile_quad_tree_cells:
 		if cells[i].is_in_group("cell"):
 			enable_cell_tile(cells[i], "snow_tile_treeQuad", true)
+			
+func add_snow_tile_rock_cells():
+	for i in snow_tile_rock_cells:
+		if cells[i].is_in_group("cell"):
+			enable_cell_tile(cells[i], "snow_tile_rock", true)	
 
-func enable_cell_tile(cell, enabled_tile_name, enable_collision = false):
+func enable_cell_tile(cell, enabled_tile_name, enable_collision = false, enable_tile = false):
 	var children = cell.get_children()
 	
 	for i in range(len(children)):
@@ -237,6 +250,8 @@ func enable_cell_tile(cell, enabled_tile_name, enable_collision = false):
 				children[i].visible = true
 				if enable_collision:
 					children[i].get_node("StaticBody/CollisionShape").disabled = false
+			elif enable_tile == true && children[i].name == "tile":
+				children[i].visible = true
 			else:
 				children[i].visible = false
 		
