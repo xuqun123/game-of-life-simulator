@@ -21,6 +21,7 @@ var kiwi
 var fox
 var robot
 var armed_ufo
+var arrow_tower
 
 export (int) var grid_size := 30
 export (float) var run_speed = 50.0
@@ -72,6 +73,7 @@ func _ready() -> void:
 	fox = get_parent_spatial().get_node("Fox")
 	robot = get_parent_spatial().get_node("Robot")
 	armed_ufo = get_parent_spatial().get_node("ArmedUFO")
+	arrow_tower = get_parent_spatial().get_node("ArrowTower")
 	
 	set_nodes_positions()
 	
@@ -374,6 +376,9 @@ func _on_ResetButton_pressed():
 	armed_ufo.stopped = true
 	armed_ufo.reset_bow()
 	
+	arrow_tower.stopped = true
+	arrow_tower.reset_bow()
+	
 func _on_StopButton_pressed():
 	print("The stop button is pressed.")
 	started = false
@@ -382,6 +387,7 @@ func _on_StopButton_pressed():
 	kiwi.stopped = true
 	fox.stopped = true
 	armed_ufo.stopped = true
+	arrow_tower.stopped = true
 
 func _process(_delta):
 	if started and start_frame >= run_speed:
@@ -414,6 +420,9 @@ func set_npc_speeds(factor):
 	
 	armed_ufo.moving = false
 	armed_ufo.speed_factor = factor
+	
+	arrow_tower.moving = false
+	arrow_tower.speed_factor = factor
 	
 func set_enabled_cells_count():
 	var cells = get_children()
